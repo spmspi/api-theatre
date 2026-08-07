@@ -75,7 +75,7 @@ class Performance(models.Model):
         on_delete=models.CASCADE,
         related_name="performance",
     )
-    cinema_hall = models.ForeignKey(
+    theatre_hall = models.ForeignKey(
         TheatreHall,
         on_delete=models.CASCADE,
         related_name="performance"

@@ -1,9 +1,9 @@
 import datetime
 
-from django.db.models import Count
+from django.db.models import Count, F
 from django.shortcuts import render
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import F, extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -12,6 +12,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from theatre.models import Genre, Actor, TheatreHall, Play, Reservation, Performance
+from theatre.serializers import GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
+    ReservationSerializer
 
 
 class GenreViesSet(
@@ -19,8 +21,8 @@ class GenreViesSet(
     mixins.ListModelMixin,
     GenericViewSet,):
     queryset = Genre.objects.all()
-    serializer_class =
-    permission_classes =
+    serializer_class = GenreSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class ActorViewSet(
@@ -28,8 +30,8 @@ class ActorViewSet(
     mixins.ListModelMixin,
     GenericViewSet,):
     queryset = Actor.objects.all()
-    serializer_class =
-    permission_classes =
+    serializer_class = ActorSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class TheatreHallViewSet(
@@ -37,8 +39,8 @@ class TheatreHallViewSet(
     mixins.ListModelMixin,
     GenericViewSet,):
     queryset = TheatreHall.objects.all()
-    serializer_class =
-    permission_classes =
+    serializer_class = TheatreHallSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class PlayViewSet(
@@ -47,8 +49,8 @@ class PlayViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,):
     queryset = Play.objects.prefetch_related("genres", "actors")
-    serializer_class =
-    permission_classes =
+    serializer_class = PlaySerializer
+    permission_classes = (IsAuthenticated,)
 
     @staticmethod
     def _params_to_ints(qs):
@@ -95,9 +97,9 @@ class PlayViewSet(
         permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
-        """Endpoint for uploading image to specific movie"""
-        movie = self.get_object()
-        serializer = self.get_serializer(movie, data=request.data)
+        """Endpoint for uploading image to specific play"""
+        play = self.get_object()
+        serializer = self.get_serializer(play, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -120,7 +122,7 @@ class ReservationViewSet(
     queryset = Reservation.objects.prefetch_related(
         "tickets__performance__play", "tickets__performance__theatre_hall"
     )
-    serializer_class =
+    serializer_class = ReservationSerializer
     pagination_class = OrderPagination
     permission_classes = (IsAuthenticated,)
 
@@ -137,14 +139,13 @@ class ReservationViewSet(
         serializer.save(user=self.request.user)
 
 
-class PerformanceViewSet(
-    viewsets.modelViewSet,):
+class PerformanceViewSet(viewsets.ModelViewSet):
     queryset = (
         Performance.objects.all()
         .select_related("play", "theatre_hall")
         .annotate(
             tickets_available=(
-                    F("cinema_hall__rows") * F("cinema_hall__seats_in_row")
+                    F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
                     - Count("tickets")
             )
         )
