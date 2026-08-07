@@ -1,4 +1,9 @@
+import datetime
+
+from django.db.models import Count
 from django.shortcuts import render
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import F, extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -6,7 +11,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from theatre.models import Genre, Actor, TheatreHall, Play, Reservation
+from theatre.models import Genre, Actor, TheatreHall, Play, Reservation, Performance
 
 
 class GenreViesSet(
@@ -103,6 +108,7 @@ class PlayViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+
 class OrderPagination(PageNumberPagination):
     page_size = 10
     max_page_size = 100
@@ -130,4 +136,52 @@ class ReservationViewSet(
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+class PerformanceViewSet(
+    viewsets.modelViewSet,):
+    queryset = (
+        Performance.objects.all()
+        .select_related("play", "theatre_hall")
+        .annotate(
+            tickets_available=(
+                    F("cinema_hall__rows") * F("cinema_hall__seats_in_row")
+                    - Count("tickets")
+            )
+        )
+    )
+
+    def get_queryset(self):
+        date = self.request.query_params.get("date")
+        play_id_str = self.request.query_params.get("play")
+
+        queryset = self.queryset
+
+        if date:
+            date = datetime.strptime(date, "%Y-%m-%d").date()
+            queryset = queryset.filter(show_time__date=date)
+
+        if play_id_str:
+            queryset = queryset.filter(play_id=int(play_id_str))
+
+        return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "play",
+                type=OpenApiTypes.INT,
+                description="Filter by play id (ex. ?play=2)",
+            ),
+            OpenApiParameter(
+                "date",
+                type=OpenApiTypes.DATE,
+                description=(
+                        "Filter by datetime of Performance"
+                        "(ex. ?date=2026-07-01)"
+                ),
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
