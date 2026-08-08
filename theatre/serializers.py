@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
-from theatre.models import Genre, Actor, Performance, TheatreHall, Reservation, Play
+from theatre.models import Genre, Actor, Performance, TheatreHall, Reservation, Play, Ticket
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -56,5 +57,54 @@ class PlayDetailSerializer(PlaySerializer):
 class PlayImageSerializer(PlayDetailSerializer):
     model = Play
     fields = ("id", "image")
+
+class PerformanceSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Performance
+        fields = ("id", "show_time", "play", "theatre_hall")
+
+class PerformanceSessionListSerializer(PerformanceSessionSerializer):
+    play_title = serializers.CharField(source="play.title", read_only=True)
+    play_image = serializers.ImageField(source="play.image", read_only=True)
+    theatre_hall_name = serializers.CharField(
+        source="theatre_hall.name", read_only=True
+    )
+    theatre_hall_capacity = serializers.IntegerField(
+        source="theatre_hall.capacity", read_only=True
+    )
+    tickets_available = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Performance
+        fields = (
+            "id",
+            "show_time",
+            "play_title",
+            "play_image",
+            "theatre_hall_name",
+            "theatre_hall_capacity",
+            "tickets_available",
+        )
+
+class TicketSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        data = super(TicketSerializer, self).validate(attrs=attrs)
+        Ticket.validate_ticket(
+            attrs["row"],
+            attrs["seat"],
+            attrs["performance"].theatre_hall,
+            ValidationError
+        )
+        return data
+
+    class Meta:
+        model = Ticket
+        fields = ("id", "row", "seat", "performance")
+
+class TicketListSerializer(TicketSerializer):
+    performance = PerformanceSessionListSerializer(many=False, read_only=True)
+
+class ReservationListSerializer(ReservationSerializer):
+    tickets = TicketListSerializer(many=True, read_only=True)
 
 

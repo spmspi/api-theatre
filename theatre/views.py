@@ -13,7 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from theatre.models import Genre, Actor, TheatreHall, Play, Reservation, Performance
 from theatre.serializers import GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
-    ReservationSerializer
+    ReservationSerializer , PlayListSerializer
 
 
 class GenreViesSet(
@@ -80,15 +80,15 @@ class PlayViewSet(
 
     def get_serializer_class(self):
         if self.action == "list":
-            return
+            return PlayListSerializer
 
         if self.action == "retrieve":
-            return
+            return PlayDetailSerializer
 
         if self.action == "upload_image":
-            return
+            return PlayImageSerializer
 
-        return
+        return PlaySerializer
 
     @action(
         methods=["POST"],
@@ -131,9 +131,9 @@ class ReservationViewSet(
 
     def get_serializer_class(self):
         if self.action == "list":
-            return
+            return ReservationListSerializer
 
-        return
+        return ReservationSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -185,4 +185,5 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
 
