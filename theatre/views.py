@@ -12,8 +12,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from theatre.models import Genre, Actor, TheatreHall, Play, Reservation, Performance
-from theatre.serializers import GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
-    ReservationSerializer , PlayListSerializer
+from theatre.serializers import (GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
+    ReservationSerializer , PlayListSerializer, ReservationListSerializer, PerformanceSessionListSerializer,
+                                 PerformanceDetailSerializer, PerformanceImageSerializer, PerformanceSerializer, PlayDetailSerializer)
 
 
 class GenreViesSet(
@@ -111,7 +112,7 @@ class PlayViewSet(
         return super().list(request, *args, **kwargs)
 
 
-class OrderPagination(PageNumberPagination):
+class ReservationPagination(PageNumberPagination):
     page_size = 10
     max_page_size = 100
 
@@ -123,7 +124,7 @@ class ReservationViewSet(
         "tickets__performance__play", "tickets__performance__theatre_hall"
     )
     serializer_class = ReservationSerializer
-    pagination_class = OrderPagination
+    pagination_class = ReservationPagination
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -186,4 +187,15 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PerformanceSessionListSerializer
+
+        if self.action == "retrieve":
+            return PerformanceDetailSerializer
+
+        if self.action == "upload_image":
+            return PerformanceImageSerializer
+
+        return PerformanceSerializer
 
