@@ -11,16 +11,37 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from theatre.models import Genre, Actor, TheatreHall, Play, Reservation, Performance, Ticket
-from theatre.serializers import (GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
-    ReservationSerializer , PlayListSerializer, ReservationListSerializer, PerformanceSessionListSerializer,
-                                 PerformanceDetailSerializer, PerformanceImageSerializer, PerformanceSerializer, PlayDetailSerializer, TicketSerializer)
+from theatre.models import (
+    Genre,
+    Actor,
+    TheatreHall,
+    Play,
+    Reservation,
+    Performance,
+    Ticket,
+)
+from theatre.serializers import (
+    GenreSerializer,
+    ActorSerializer,
+    TheatreHallSerializer,
+    PlaySerializer,
+    ReservationSerializer,
+    PlayListSerializer,
+    ReservationListSerializer,
+    PerformanceSessionListSerializer,
+    PerformanceDetailSerializer,
+    PerformanceImageSerializer,
+    PerformanceSerializer,
+    PlayDetailSerializer,
+    TicketSerializer,
+)
 
 
 class GenreViesSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
-    GenericViewSet,):
+    GenericViewSet,
+):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAuthenticated,)
@@ -29,7 +50,8 @@ class GenreViesSet(
 class ActorViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
-    GenericViewSet,):
+    GenericViewSet,
+):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
     permission_classes = (IsAuthenticated,)
@@ -38,7 +60,8 @@ class ActorViewSet(
 class TheatreHallViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
-    GenericViewSet,):
+    GenericViewSet,
+):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
     permission_classes = (IsAuthenticated,)
@@ -48,7 +71,8 @@ class PlayViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet,):
+    viewsets.GenericViewSet,
+):
     queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
     permission_classes = (IsAuthenticated,)
@@ -116,10 +140,12 @@ class ReservationPagination(PageNumberPagination):
     page_size = 10
     max_page_size = 100
 
+
 class ReservationViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
-    GenericViewSet,):
+    GenericViewSet,
+):
     queryset = Reservation.objects.prefetch_related(
         "tickets__performance__play", "tickets__performance__theatre_hall"
     )
@@ -146,8 +172,8 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         .select_related("play", "theatre_hall")
         .annotate(
             tickets_available=(
-                    F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
-                    - Count("tickets")
+                F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
+                - Count("tickets")
             )
         )
     )
@@ -178,8 +204,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
                 "date",
                 type=OpenApiTypes.DATE,
                 description=(
-                        "Filter by datetime of Performance"
-                        "(ex. ?date=2026-07-01)"
+                    "Filter by datetime of Performance" "(ex. ?date=2026-07-01)"
                 ),
             ),
         ]
@@ -199,8 +224,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
         return PerformanceSerializer
 
+
 class TicketsViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
-
-
+    serializer_class = TicketSerializera

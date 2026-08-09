@@ -76,9 +76,7 @@ class Performance(models.Model):
         related_name="performance",
     )
     theatre_hall = models.ForeignKey(
-        TheatreHall,
-        on_delete=models.CASCADE,
-        related_name="performance"
+        TheatreHall, on_delete=models.CASCADE, related_name="performance"
     )
 
     class Meta:
@@ -91,9 +89,7 @@ class Performance(models.Model):
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="reservations"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations"
     )
 
     def __str__(self):
@@ -105,14 +101,10 @@ class Reservation(models.Model):
 
 class Ticket(models.Model):
     performance = models.ForeignKey(
-        Performance,
-        on_delete=models.CASCADE,
-        related_name="tickets"
+        Performance, on_delete=models.CASCADE, related_name="tickets"
     )
     reservation = models.ForeignKey(
-        Reservation,
-        on_delete=models.CASCADE,
-        related_name="tickets"
+        Reservation, on_delete=models.CASCADE, related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -156,9 +148,7 @@ class Ticket(models.Model):
         )
 
     def __str__(self):
-        return (
-            f"{str(self.performance)} (row: {self.row}, seat: {self.seat})"
-        )
+        return f"{str(self.performance)} (row: {self.row}, seat: {self.seat})"
 
     class Meta:
         unique_together = ("performance", "row", "seat")
