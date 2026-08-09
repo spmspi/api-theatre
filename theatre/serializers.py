@@ -108,6 +108,7 @@ class PerformanceSessionListSerializer(PerformanceSessionSerializer):
         )
 
 class TicketSerializer(serializers.ModelSerializer):
+
     def validate(self, attrs):
         data = super(TicketSerializer, self).validate(attrs=attrs)
         Ticket.validate_ticket(
@@ -118,9 +119,12 @@ class TicketSerializer(serializers.ModelSerializer):
         )
         return data
 
+    name_play = serializers.CharField(source="performance.play.title", read_only=True)
+    show_time = serializers.DateTimeField(source="performance.show_time" , read_only=True)
+
     class Meta:
         model = Ticket
-        fields = ("id", "row", "seat", "performance")
+        fields = ("id", "row", "seat", "performance", "name_play", "show_time")
 
 class TicketListSerializer(TicketSerializer):
     performance = PerformanceSessionListSerializer(many=False, read_only=True)
@@ -136,5 +140,6 @@ class ReservationListSerializer(ReservationSerializer):
             "performance",
             "created_at",
         )
+
 
 

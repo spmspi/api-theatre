@@ -11,10 +11,10 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from theatre.models import Genre, Actor, TheatreHall, Play, Reservation, Performance
+from theatre.models import Genre, Actor, TheatreHall, Play, Reservation, Performance, Ticket
 from theatre.serializers import (GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
     ReservationSerializer , PlayListSerializer, ReservationListSerializer, PerformanceSessionListSerializer,
-                                 PerformanceDetailSerializer, PerformanceImageSerializer, PerformanceSerializer, PlayDetailSerializer)
+                                 PerformanceDetailSerializer, PerformanceImageSerializer, PerformanceSerializer, PlayDetailSerializer, TicketSerializer)
 
 
 class GenreViesSet(
@@ -198,4 +198,9 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             return PerformanceImageSerializer
 
         return PerformanceSerializer
+
+class TicketsViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
 
