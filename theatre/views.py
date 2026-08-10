@@ -227,4 +227,4 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
 class TicketsViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
-    serializer_class = TicketSerializera
+    serializer_class = TicketSerializer

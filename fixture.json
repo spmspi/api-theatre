@@ -85,6 +85,23 @@
     }
   },
   {
+    "model": "user.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$870000$g9V31X34O41G4eN9X9Y4d5$mX9c6g0CgR9/1O1e0o+lR8m5b4A1g9D8C0B1A2b3C4D=",
+      "last_login": null,
+      "is_superuser": true,
+      "first_name": "Test",
+      "last_name": "Admin",
+      "email": "user_admin@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-08-05T16:45:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "theatre.theatrehall",
     "pk": 1,
     "fields": {
