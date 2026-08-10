@@ -1,1 +1,32 @@
 # api-theatre
+
+An API service for theaters that enables remote seat booking.
+***
+ Features
+
+- Using a JWT token
+- Image uploading
+- filtering by parameters 
+- Pagination has been implemented.
+- seat reservation with validation of already occupied seats
+
+***
+
+Docker installation and launch
+
+- git clone https://github.com/spmspi/api-theatre.git
+- docker build -t api-theatre .
+- docker run
+- Open in your browser http://localhost:8000/
+
+Test admin user -
+- Login "admin@admin.com"
+- Password "123456Pp"
+
+***
+
+images: 
+![api:theatre.png](api%3Atheatre.png)
+
+swagger
+![swagger.png](swagger.png)
