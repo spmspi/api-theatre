@@ -1,7 +1,6 @@
-import datetime
+from datetime import datetime
 
 from django.db.models import Count, F
-from django.shortcuts import render
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, viewsets, status
@@ -33,11 +32,11 @@ from theatre.serializers import (
     PerformanceImageSerializer,
     PerformanceSerializer,
     PlayDetailSerializer,
-    TicketSerializer,
+    TicketSerializer, PlayImageSerializer,
 )
 
 
-class GenreViesSet(
+class GenreViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     GenericViewSet,

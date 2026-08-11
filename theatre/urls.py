@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from theatre.views import (
-    GenreViesSet,
+    GenreViewSet,
     ActorViewSet,
     TheatreHallViewSet,
     PlayViewSet,
@@ -12,7 +12,7 @@ from theatre.views import (
 
 router = routers.DefaultRouter()
 
-router.register("genres", GenreViesSet)
+router.register("genres", GenreViewSet)
 router.register("actors", ActorViewSet)
 router.register("theatre_hall", TheatreHallViewSet)
 router.register("play", PlayViewSet)
