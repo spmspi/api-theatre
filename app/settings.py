@@ -18,15 +18,13 @@ from django.core.files import images
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",)
+DEBUG = os.environ.get("DEBUG",)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-8wiro9)e3=e*_%jn%tmq3@!g29^k7fxrxxymhl3i%&-ppidoes"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -156,6 +154,8 @@ SPECTACULAR_SETTINGS = {
         "defaultModelExpandDepth": 2,
     },
 }
+
+DEFAULT_PERMISSION_CLASSES = "rest_framework.permissions.IsAuthenticated"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
