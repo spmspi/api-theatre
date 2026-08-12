@@ -15,8 +15,7 @@ An API service for theaters that enables remote seat booking.
 Docker installation and launch
 
 - git clone https://github.com/spmspi/api-theatre.git
-- docker build -t api-theatre .
-- docker run
+- docker-compose up --build
 - Open in your browser http://localhost:8000/
 
 Test admin user -
