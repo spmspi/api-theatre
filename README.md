@@ -29,3 +29,7 @@ images:
 
 swagger
 ![swagger.png](swagger.png)
+
+***
+Diagram 
+![theatre.png](theatre.png)

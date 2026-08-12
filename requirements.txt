@@ -24,3 +24,5 @@ rpds-py==0.25.0
 sqlparse==0.5.5
 uritemplate==4.2.0
 flake8==7.3.0
+django-extensions
+pydot
