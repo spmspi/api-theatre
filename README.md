@@ -32,4 +32,4 @@ swagger
 
 ***
 Diagram 
-![theatre.png](theatre.png)
+![theatre.png](docs/theatre.png)
