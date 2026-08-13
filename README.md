@@ -25,10 +25,10 @@ Test admin user -
 ***
 
 images: 
-![api:theatre.png](api%3Atheatre.png)
+![api:theatre.png](docs/api%3Atheatre.png)
 
 swagger
-![swagger.png](swagger.png)
+![swagger.png](docs/swagger.png)
 
 ***
 Diagram 
