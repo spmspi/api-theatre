@@ -1,4 +1,3 @@
-from PIL import Image
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -25,12 +24,9 @@ def sample_play(**params):
 
 
 def sample_performance_session(**params):
-    theatre_hall = TheatreHall.objects.create(
-        name="Blue", rows=20, seats_in_row=20
-    )
+    theatre_hall = TheatreHall.objects.create(name="Blue", rows=20, seats_in_row=20)
 
     play = sample_play()
-
 
     defaults = {
         "show_time": "2026-09-02 14:00:00",
@@ -41,9 +37,11 @@ def sample_performance_session(**params):
 
     return Performance.objects.create(**defaults)
 
+
 def image_upload_url(play_id):
     """Return URL for recipe image upload"""
     return reverse("theatre:play-upload-image", args=[play_id])
+
 
 def detail_url(movie_id):
     return reverse("theatre:play-detail", args=[movie_id])
@@ -91,9 +89,7 @@ class AuthenticatedPlayApiTests(TestCase):
 
         play3 = sample_play(title="Play without genres")
 
-        res = self.client.get(
-            THEATRE_URL, {"genres": f"{genre1.id},{genre2.id}"}
-        )
+        res = self.client.get(THEATRE_URL, {"genres": f"{genre1.id},{genre2.id}"})
 
         serializer1 = PlayListSerializer(play1)
         serializer2 = PlayListSerializer(play2)
@@ -102,7 +98,6 @@ class AuthenticatedPlayApiTests(TestCase):
         self.assertIn(serializer1.data, res.data)
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer3.data, res.data)
-
 
     def test_filter_play_by_actors(self):
         actor1 = Actor.objects.create(first_name="Actor 1", last_name="Last 1")
@@ -116,9 +111,7 @@ class AuthenticatedPlayApiTests(TestCase):
 
         play3 = sample_play(title="Movie without actors")
 
-        res = self.client.get(
-            THEATRE_URL, {"actors": f"{actor1.id},{actor2.id}"}
-        )
+        res = self.client.get(THEATRE_URL, {"actors": f"{actor1.id},{actor2.id}"})
 
         serializer1 = PlayListSerializer(play1)
         serializer2 = PlayListSerializer(play2)
@@ -146,9 +139,7 @@ class AuthenticatedPlayApiTests(TestCase):
     def test_retrieve_play_detail(self):
         play = sample_play()
         play.genres.add(Genre.objects.create(name="Genre"))
-        play.actors.add(
-            Actor.objects.create(first_name="Actor", last_name="Last")
-        )
+        play.actors.add(Actor.objects.create(first_name="Actor", last_name="Last"))
 
         url = detail_url(play.id)
         res = self.client.get(url)
@@ -168,8 +159,6 @@ class CreatedReservationApiTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_create_ticket(self):
-        play1 = sample_play(title="Play")
-        play2 = sample_play(title="Another play")
         performance_session = sample_performance_session()
         reservation = Reservation.objects.create(user=self.user)
         payload = {
@@ -179,12 +168,8 @@ class CreatedReservationApiTests(TestCase):
             "reservation": reservation.id,
         }
 
-        res = self.client.post(
-            TICKET_URL, payload, format="json"
-        )
+        res = self.client.post(TICKET_URL, payload, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-        res = self.client.post(
-            TICKET_URL, payload, format="json"
-        )
+        res = self.client.post(TICKET_URL, payload, format="json")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

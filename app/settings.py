@@ -18,7 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get(
     "SECRET_KEY",)
-DEBUG = os.environ.get("DEBUG",)
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 
 # Quick-start development settings - unsuitable for production
@@ -140,6 +141,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -154,8 +158,6 @@ SPECTACULAR_SETTINGS = {
         "defaultModelExpandDepth": 2,
     },
 }
-
-DEFAULT_PERMISSION_CLASSES = "rest_framework.permissions.IsAuthenticated"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
